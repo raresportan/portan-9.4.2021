@@ -16,6 +16,7 @@ const sortByPriceDescending = (data:Array<RawOrder>):Array<RawOrder> => {
 
 
 const addTotals = (data: Array<RawOrder>): Array<Order> => {
+  
   return data?.reduce( (acc:Array<Order>, current:RawOrder ) => {
     const last:Order = acc.length > 0 ? acc[acc.length - 1] : { price: 0, size: 0, total: 0};
     const newOrder:Order = {
@@ -24,7 +25,7 @@ const addTotals = (data: Array<RawOrder>): Array<Order> => {
       total: last.total + current[1]
     }  
     return [...acc, newOrder];
-  }, [])
+  }, [] as Array<Order>)
 }
 
 
