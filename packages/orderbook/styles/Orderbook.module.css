@@ -1,0 +1,144 @@
+.wrapper{
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  opacity: 0;
+  transform: scale(1.01);
+  transition: all .5s ease-in-out;
+}
+.wrapperloaded{
+  opacity: 1;
+  transform: scale(1);
+}
+
+.container{
+  display: flex;
+  flex-grow: 1;
+}
+
+.spread{
+  position: absolute;
+  top: -50px;
+  height: 50px;
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.asks,
+.bids{
+  flex-grow: 1;
+  text-align: right;  
+  font-size: 0.9rem;
+  min-width: 50%;
+}
+
+.asks{
+  --bg-direction: to left;
+  --bg-color: rgba(255,0,0,0.2);
+}
+
+.bids{
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  --bg-direction: to right;
+  --bg-color: rgba(0,255,0,0.2);
+}
+
+.asks > header,
+.bids > header{
+  display: flex;
+  color: rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.asks > article > div,
+.bids > article> div{
+  display: flex;
+}
+
+
+.asks > header > span,
+.bids > header > span {
+  flex-grow: 1;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  max-width: 30%;
+}
+
+.asks > article,
+.bids > article {
+  display: flex;
+  flex-direction: column;
+}
+
+.asks > article > div > span,
+.bids > article > div > span {
+  flex-grow: 1;
+  padding: 0.3rem 1rem;
+  font-family: 'Courier New', Courier, monospace;
+  max-width: 30%;
+}
+.asks > article > div > span:first-child{
+  color: #FF7F7F;
+}
+.bids > article> div > span:first-child{
+  color: lime;
+}
+
+
+
+
+.bids > header,
+.bids > article > div{
+  flex-direction: row-reverse;
+}
+
+
+.switch{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-basis: 80px;
+  min-height: 80px;
+}
+.switch > button {
+  border: 0;
+  border-radius: 3px;
+  padding: .5rem 1rem;
+  background-color: #5e38e2;
+  color: #fff;
+  font-size: 1rem;
+  transition: all .3s ease-out;
+}
+.switch > button:hover,
+.switch > button:focus{
+  background-color: #3c0ce3;
+}
+.switch > button:active{
+  background-color: #2700ac;
+}
+
+@media (max-width: 600px) {
+  .container{
+    flex-direction: column-reverse;
+  }
+  .bids {
+    --bg-direction: to left;
+  }
+  .bids > header {
+    display: none;
+  }
+  .bids > article > div{
+    flex-direction: row;
+  }
+  .asks > article {
+    flex-direction: column-reverse;
+  }
+  .spread{
+    position:initial;
+  }
+
+}  
