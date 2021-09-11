@@ -15,6 +15,7 @@ interface WebSocketEvent {
 
 export interface OrderbookMachineContext {
   initialized: boolean,
+  forcePause: boolean,
   feed: Feed,
   data: OrderbookData | undefined,
   error: Error | undefined
@@ -24,7 +25,7 @@ export type OrderbookMachineEvent =
   | { type: 'CONNECT' }
   | { type: 'CONNECTED' }
   | { type: 'FAILURE', error: any }
-  | { type: 'PAUSE' }
+  | { type: 'PAUSE', forced: boolean }
   | { type: 'PAUSED' }
   | { type: 'START' }
   | { type: 'STARTED' }
@@ -79,7 +80,7 @@ const eventProcessor:EventProcessor = (function() {
           }
         }
         catch (err) {
-          console.log(err);
+          //console.log(err);
         }
       }
     }   
@@ -102,6 +103,7 @@ const websocketMachine = createMachine<OrderbookMachineContext, OrderbookMachine
   initial: 'idle',
   context: {
     initialized: false,
+    forcePause: false,
     feed: 'PI_XBTUSD',
     data: undefined,
     error: undefined,
@@ -117,7 +119,6 @@ const websocketMachine = createMachine<OrderbookMachineContext, OrderbookMachine
         id:'connectWebsocket',
         src: () => (callback) => {
           try {
-            console.log('connectWebsocket...')
             socket = new WebSocket(HOST);
 
             const connectedHandler = () => callback('CONNECTED');
@@ -187,10 +188,13 @@ const websocketMachine = createMachine<OrderbookMachineContext, OrderbookMachine
           on : {
             PAUSE: {
               target: 'pausing',
-              actions: (context) => {
-                const message = `{"event": "unsubscribe","feed": "${FEED_TYPE}","product_ids": ["${context.feed}"]}`;
-                socket?.send(message);
-              }
+              actions: [
+                assign({ forcePause: (context, event) => event.forced }),
+                (context) => {
+                  const message = `{"event": "unsubscribe","feed": "${FEED_TYPE}","product_ids": ["${context.feed}"]}`;
+                  socket?.send(message);
+                }
+              ]
             },           
             RECEIVE: {
               actions: assign({ data: (context, event) => event.data })

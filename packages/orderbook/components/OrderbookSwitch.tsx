@@ -8,6 +8,9 @@ import styles from '../styles/Orderbook.module.css';
 // feed selector
 const feedSelector = (state:State<OrderbookMachineContext, OrderbookMachineEvent, OrderbookMachineState, any>) => state.context.feed;
 
+// forced selector
+const forcePauseSelector = (state:State<OrderbookMachineContext, OrderbookMachineEvent, OrderbookMachineState, any>) => state.context.forcePause;
+
 // machine paused state selector
 const pausedSelector = (state:State<OrderbookMachineContext, OrderbookMachineEvent, OrderbookMachineState, any>) =>  state.matches('connected.paused');
 
@@ -19,20 +22,20 @@ const OrderbookSwitch = () => {
   const orderbookService = useContext(OrderbookContext);
   const obFeed = useSelector(orderbookService, feedSelector);
   const isPaused = useSelector(orderbookService, pausedSelector);
-
+  const forcePause = useSelector(orderbookService, forcePauseSelector);
   const { send } = orderbookService;
 
   const toggle = () => {
-    send({type: 'PAUSE'});
+    send({type: 'PAUSE', forced: false});
   }
 
   useEffect(() => {
-    if(isPaused) {
+    if(isPaused && !forcePause) {
       // switch feed
       send({type: 'SWITCH', feed: obFeed === 'PI_XBTUSD' ? 'PI_ETHUSD' : 'PI_XBTUSD'});
       send({type: 'START'});
     }  
-  },[send, obFeed, isPaused])
+  },[send, obFeed, isPaused, forcePause])
   
   return (
     <div className={styles.switch}>
